@@ -56,7 +56,7 @@ function IndexRoute() {
   const githubUrl = env.VITE_GITHUB_REPO_URL;
 
   return (
-    <SidebarProvider className="flex min-h-0 flex-1">
+    <SidebarProvider className="flex h-full min-h-0 flex-1 overflow-hidden">
       <ErdAppSidebar
         onAddPaste={() => {
           setDialogMode("add");
@@ -71,7 +71,7 @@ function IndexRoute() {
         onOpenImportDialog={() => setImportDialogOpen(true)}
       />
       <SidebarInset className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b px-3 py-2.5 md:px-4">
+        <header className="flex h-12 shrink-0 items-center justify-between gap-3 border-b px-3 md:px-4">
           <div className="flex min-w-0 items-center gap-2">
             <SidebarTrigger />
             <p className="truncate text-muted-foreground text-sm">{subtitle}</p>

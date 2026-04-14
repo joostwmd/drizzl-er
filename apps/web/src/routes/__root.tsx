@@ -43,8 +43,8 @@ function RootComponent() {
         disableTransitionOnChange
         storageKey="vite-ui-theme"
       >
-        <div className="grid h-svh w-full grid-rows-[1fr]">
-          <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+        <div className="grid h-svh min-h-0 w-full grid-rows-[minmax(0,1fr)] overflow-hidden">
+          <div className="flex min-h-0 min-w-0 flex-col overflow-hidden [&>*]:min-h-0 [&>*]:flex-1">
             <Outlet />
           </div>
         </div>

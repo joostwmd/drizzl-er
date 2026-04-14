@@ -18,7 +18,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -53,16 +52,12 @@ export function ErdAppSidebar({ onAddPaste, onEditFile, onOpenImportDialog }: Ap
 
   return (
     <Sidebar collapsible="offcanvas" variant="sidebar">
-      <SidebarHeader className="gap-2 border-b border-sidebar-border pb-2">
-        <div className="flex items-center px-1">
-          <span className="font-semibold text-sidebar-foreground text-sm tracking-tight">Drizzl-er</span>
-        </div>
-        <Separator className="bg-sidebar-border" />
+      <SidebarHeader className="flex h-12 shrink-0 flex-row items-center gap-0 border-b px-3 py-0 md:px-4">
+        <span className="font-semibold text-sidebar-foreground text-sm tracking-tight">Drizzl-er</span>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Schema</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
