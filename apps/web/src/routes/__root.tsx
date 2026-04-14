@@ -4,7 +4,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { HeadContent, Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import type { trpc } from "@/utils/trpc";
 
@@ -24,7 +23,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
       {
         name: "description",
-        content: "drizzl-er is a web application",
+        content: "Visualize Drizzle ORM schemas as entity–relationship diagrams.",
       },
     ],
     links: [
@@ -46,9 +45,10 @@ function RootComponent() {
         disableTransitionOnChange
         storageKey="vite-ui-theme"
       >
-        <div className="grid grid-rows-[auto_1fr] h-svh">
-          <Header />
-          <Outlet />
+        <div className="grid h-svh w-full grid-rows-[1fr]">
+          <div className="flex min-h-0 min-w-0 flex-col overflow-hidden">
+            <Outlet />
+          </div>
         </div>
         <Toaster richColors />
       </ThemeProvider>

@@ -5,6 +5,7 @@ export const env = createEnv({
   clientPrefix: "VITE_",
   client: {
     VITE_SERVER_URL: z.url(),
+    VITE_GITHUB_REPO_URL: z.string().url().optional(),
   },
   runtimeEnv: (import.meta as any).env,
   emptyStringAsUndefined: true,

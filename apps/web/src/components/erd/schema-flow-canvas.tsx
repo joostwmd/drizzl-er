@@ -10,6 +10,7 @@ import {
   type NodeChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { cn } from "@drizzl-er/ui/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 
 import { schemaGraphToReactFlow } from "@/lib/schema-graph-to-flow";
@@ -27,16 +28,24 @@ const edgeTypes = {
 
 type SchemaFlowCanvasProps = {
   source: string;
+  className?: string;
 };
 
-export function SchemaFlowCanvas({ source }: SchemaFlowCanvasProps) {
+export function SchemaFlowCanvas({ source, className }: SchemaFlowCanvasProps) {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [parseError, setParseError] = useState<string | null>(null);
 
   useEffect(() => {
+    const trimmed = source.trim();
+    if (!trimmed) {
+      setParseError(null);
+      setNodes([]);
+      setEdges([]);
+      return;
+    }
     try {
-      const graph = convertDrizzleSchemaToGraph(source);
+      const graph = convertDrizzleSchemaToGraph(trimmed);
       const next = schemaGraphToReactFlow(graph);
       setNodes(next.nodes);
       setEdges(next.edges);
@@ -56,29 +65,37 @@ export function SchemaFlowCanvas({ source }: SchemaFlowCanvasProps) {
     setEdges((eds) => applyEdgeChanges(changes, eds));
   }, []);
 
+  const empty = !source.trim();
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className={cn("flex min-h-0 flex-1 flex-col gap-2", className)}>
+      {empty ? (
+        <p className="text-sm text-muted-foreground">Add schema code in the sidebar to render a graph.</p>
+      ) : null}
       {parseError ? (
         <p className="text-sm text-destructive" role="alert">
           {parseError}
         </p>
       ) : null}
-      <div className="h-[min(70vh,640px)] w-full min-h-[400px] rounded-md border border-border">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        nodesConnectable={false}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        fitView
-        fitViewOptions={{ padding: 0.2 }}
-        proOptions={{ hideAttribution: true }}
-      >
-        <Background />
-      </ReactFlow>
-      </div>
+      {empty ? null : (
+        <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-md border border-border">
+          <ReactFlow
+            className="h-full w-full"
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            nodesConnectable={false}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            fitView
+            fitViewOptions={{ padding: 0.2 }}
+            proOptions={{ hideAttribution: true }}
+          >
+            <Background />
+          </ReactFlow>
+        </div>
+      )}
     </div>
   );
 }
