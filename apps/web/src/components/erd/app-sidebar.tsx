@@ -53,7 +53,7 @@ export function ErdAppSidebar({ onAddPaste, onEditFile, onOpenImportDialog }: Ap
   return (
     <Sidebar collapsible="offcanvas" variant="sidebar">
       <SidebarHeader className="flex h-12 shrink-0 flex-row items-center gap-0 border-b px-3 py-0 md:px-4">
-        <span className="font-semibold text-sidebar-foreground text-sm tracking-tight">Drizzl-er</span>
+        <span className="font-semibold text-sidebar-foreground text-sm tracking-tight">Drizzl-ER</span>
       </SidebarHeader>
 
       <SidebarContent>
