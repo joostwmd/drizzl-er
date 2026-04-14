@@ -1,0 +1,3 @@
+{
+  "extends": "@drizzl-er/config/tsconfig.base.json"
+}
