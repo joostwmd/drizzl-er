@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
-import { FileDown, GithubIcon } from "lucide-react";
+import { FileDown, GithubIcon, Loader2 } from "lucide-react";
 import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -80,12 +80,19 @@ function IndexRoute() {
             <Button
               type="button"
               variant="outline"
-              size="icon"
+              size="sm"
+              className="gap-2"
               disabled={!exportCaps.canExport || exportCaps.isExporting}
-              onClick={() => void canvasRef.current?.exportPdf()}
+              aria-busy={exportCaps.isExporting}
               aria-label="Export diagram as PDF"
+              onClick={() => void canvasRef.current?.exportPdf()}
             >
-              <FileDown className="size-4" />
+              {exportCaps.isExporting ? (
+                <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden />
+              ) : (
+                <FileDown className="size-4 shrink-0" aria-hidden />
+              )}
+              <span>Export</span>
             </Button>
             <ModeToggle />
             {githubUrl ? (

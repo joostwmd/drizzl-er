@@ -1,54 +1,14 @@
-import { getNodesBounds, getViewportForBounds, type Node } from "@xyflow/react";
+import { type Node } from "@xyflow/react";
 import { toPng } from "html-to-image";
 import { jsPDF } from "jspdf";
 
-/** Margin on each side as a fraction of span (8% each side → factor 1 + 2×0.08 on width/height). */
-const BOUNDS_PADDING_RATIO = 0.08;
-/** Longer raster side cap (stay under html-to-image canvas limits). */
-const MAX_EXPORT_DIMENSION = 8192;
-/** Minimum longer side in pixels so small graphs stay sharp. */
-const MIN_EXPORT_LONG_SIDE = 1600;
-/** Allow zoom-out enough to fit huge graphs into the raster (avoid cropping at 0.5). */
-const VIEWPORT_MIN_ZOOM = 0.001;
-const VIEWPORT_MAX_ZOOM = 2;
-/** Bounds already include padding; do not add viewport padding again. */
-const VIEWPORT_PADDING = 0;
-
 const DEFAULT_EDGE_STROKE = "#b1b1b7";
 
-type Bounds = { x: number; y: number; width: number; height: number };
-
-function inflateBoundsCentered(bounds: Bounds, ratio: number): Bounds {
-  const w = Math.max(bounds.width, 1);
-  const h = Math.max(bounds.height, 1);
-  const factor = 1 + 2 * ratio;
-  const w2 = w * factor;
-  const h2 = h * factor;
-  const cx = bounds.x + bounds.width / 2;
-  const cy = bounds.y + bounds.height / 2;
-  return {
-    x: cx - w2 / 2,
-    y: cy - h2 / 2,
-    width: w2,
-    height: h2,
-  };
-}
-
-/** Picks exportW × exportH matching padded bounds aspect, clamped between MIN long side and MAX dimensions. */
-function computeExportDimensions(padded: Bounds): { exportW: number; exportH: number } {
-  const pw = Math.max(padded.width, 1);
-  const ph = Math.max(padded.height, 1);
-  const longSide = Math.max(pw, ph);
-
-  let s = Math.min(MAX_EXPORT_DIMENSION / pw, MAX_EXPORT_DIMENSION / ph);
-  const sFloor = MIN_EXPORT_LONG_SIDE / longSide;
-  s = Math.max(s, sFloor);
-  s = Math.min(s, MAX_EXPORT_DIMENSION / pw, MAX_EXPORT_DIMENSION / ph);
-
-  const exportW = Math.max(1, Math.ceil(pw * s));
-  const exportH = Math.max(1, Math.ceil(ph * s));
-  return { exportW, exportH };
-}
+/**
+ * Longer side cap (px) for the capture. Avoids multi‑megapixel rasters when the
+ * diagram panel is very large; scales width/height down proportionally.
+ */
+const MAX_EXPORT_LONG_SIDE = 2400;
 
 /**
  * html-to-image embeds the subtree in an SVG foreignObject; nested edge SVG paths
@@ -108,24 +68,23 @@ function inlineReactFlowEdgePresentation(scope: HTMLElement): () => void {
   };
 }
 
+/**
+ * Rasterizes the **current on-screen viewport** (pan/zoom as shown), then saves a PDF.
+ * This avoids recomputing a huge virtual bounds / refit pass around all nodes, which
+ * was the main cost (very large html-to-image canvases, including upscaling small graphs).
+ */
 export async function exportSchemaFlowToPdf(
   getNodes: () => Node[],
   viewportElement: HTMLElement,
 ): Promise<void> {
-  const nodes = getNodes();
-  if (nodes.length === 0) return;
+  if (getNodes().length === 0) return;
 
-  const bounds = getNodesBounds(nodes);
-  const paddedBounds = inflateBoundsCentered(bounds, BOUNDS_PADDING_RATIO);
-  const { exportW, exportH } = computeExportDimensions(paddedBounds);
-  const viewport = getViewportForBounds(
-    paddedBounds,
-    exportW,
-    exportH,
-    VIEWPORT_MIN_ZOOM,
-    VIEWPORT_MAX_ZOOM,
-    VIEWPORT_PADDING,
-  );
+  const w0 = Math.max(1, Math.round(viewportElement.clientWidth));
+  const h0 = Math.max(1, Math.round(viewportElement.clientHeight));
+  const longSide = Math.max(w0, h0);
+  const scaleDown = longSide > MAX_EXPORT_LONG_SIDE ? MAX_EXPORT_LONG_SIDE / longSide : 1;
+  const exportW = Math.max(1, Math.round(w0 * scaleDown));
+  const exportH = Math.max(1, Math.round(h0 * scaleDown));
 
   const restoreEdges = inlineReactFlowEdgePresentation(viewportElement);
   let dataUrl: string;
@@ -134,11 +93,8 @@ export async function exportSchemaFlowToPdf(
       backgroundColor: "#ffffff",
       width: exportW,
       height: exportH,
-      style: {
-        width: `${exportW}px`,
-        height: `${exportH}px`,
-        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
-      },
+      pixelRatio: 1,
+      skipFonts: true,
     });
   } finally {
     restoreEdges();

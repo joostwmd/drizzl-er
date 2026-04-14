@@ -1,9 +1,7 @@
 import { convertDrizzleSchemaToGraph } from "@drizzl-er/drizzle-schema-graph";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, waitForPaint } from "@/lib/utils";
 import {
   Background,
-  Panel,
   ReactFlow,
   applyEdgeChanges,
   applyNodeChanges,
@@ -14,7 +12,6 @@ import {
   type NodeChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { FileDown } from "lucide-react";
 import {
   forwardRef,
   memo,
@@ -66,7 +63,6 @@ const PdfExportControls = memo(
     ref,
   ) {
     const { getNodes } = useReactFlow();
-    const [busy, setBusy] = useState(false);
 
     const exportPdf = useCallback(async () => {
       if (exportDisabled) return;
@@ -75,37 +71,21 @@ const PdfExportControls = memo(
         toast.error("Could not find the diagram viewport.");
         return;
       }
-      setBusy(true);
       onExportingChange(true);
+      await waitForPaint();
       try {
         await exportSchemaFlowToPdf(getNodes, viewport);
       } catch (e) {
         console.error(e);
         toast.error(e instanceof Error ? e.message : "Failed to export PDF");
       } finally {
-        setBusy(false);
         onExportingChange(false);
       }
     }, [exportDisabled, getNodes, onExportingChange]);
 
     useImperativeHandle(ref, () => ({ exportPdf }), [exportPdf]);
 
-    const disabled = exportDisabled || busy;
-
-    return (
-      <Panel position="top-left" className="m-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          disabled={disabled}
-          onClick={() => void exportPdf()}
-          aria-label="Export diagram as PDF"
-        >
-          <FileDown className="size-4" />
-        </Button>
-      </Panel>
-    );
+    return null;
   }),
 );
 

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-import { DEFAULT_SCHEMA_CODE } from "@/lib/default-huge-schema-code";
+import { DEFAULT_SCHEMA_CODE } from "@/lib/default-schema-code";
 import { normalizeSchemaFileName } from "@/lib/schema-file-utils";
 
 export { DEFAULT_SCHEMA_CODE };
