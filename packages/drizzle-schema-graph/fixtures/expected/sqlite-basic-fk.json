@@ -1,0 +1,55 @@
+{
+  "nodes": [
+    {
+      "id": "fixture_post",
+      "type": "databaseSchema",
+      "data": {
+        "label": "fixture_post",
+        "schema": [
+          { "title": "id", "type": "text" },
+          { "title": "user_id", "type": "text" }
+        ],
+        "relationships": [
+          {
+            "edgeId": "fk_fixture_post_user_id_fixture_user_id",
+            "peerTableId": "fixture_user",
+            "peerLabel": "fixture_user",
+            "participation": "outgoing",
+            "cardinality": "many-to-one"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fixture_user",
+      "type": "databaseSchema",
+      "data": {
+        "label": "fixture_user",
+        "schema": [
+          { "title": "id", "type": "text" },
+          { "title": "name", "type": "text" }
+        ],
+        "relationships": [
+          {
+            "edgeId": "fk_fixture_post_user_id_fixture_user_id",
+            "peerTableId": "fixture_post",
+            "peerLabel": "fixture_post",
+            "participation": "incoming",
+            "cardinality": "one-to-many"
+          }
+        ]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "fk_fixture_post_user_id_fixture_user_id",
+      "type": "schemaRelation",
+      "source": "fixture_post",
+      "target": "fixture_user",
+      "sourceHandle": "src_user_id",
+      "targetHandle": "tgt_id",
+      "data": { "cardinality": "many-to-one" }
+    }
+  ]
+}

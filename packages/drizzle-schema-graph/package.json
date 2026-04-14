@@ -1,0 +1,25 @@
+{
+  "name": "@drizzl-er/drizzle-schema-graph",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "typescript": "^5"
+  },
+  "devDependencies": {
+    "@drizzl-er/config": "workspace:*",
+    "@types/node": "catalog:",
+    "vitest": "^3.2.4"
+  }
+}

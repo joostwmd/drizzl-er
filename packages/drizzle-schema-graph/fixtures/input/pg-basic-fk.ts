@@ -1,0 +1,14 @@
+// Input fixture derived from drizzle-erd reference (MIT): references/drizzle-erd-master/src/fixtures/schemas/pg/basic-fk.ts
+import { pgSchema, text } from "drizzle-orm/pg-core";
+
+const schema = pgSchema("");
+
+export const userTable = schema.table("user", {
+  id: text("id").primaryKey(),
+  name: text("name"),
+});
+
+export const postTable = schema.table("post", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").references(() => userTable.id),
+});

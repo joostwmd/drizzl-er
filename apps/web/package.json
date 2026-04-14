@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@drizzl-er/api": "workspace:*",
+    "@drizzl-er/drizzle-schema-graph": "workspace:*",
     "@drizzl-er/env": "workspace:*",
     "@drizzl-er/ui": "workspace:*",
     "@hookform/resolvers": "^5.1.1",
@@ -22,6 +23,7 @@
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
     "@trpc/tanstack-react-query": "^11.13.4",
+    "@xyflow/react": "^12.10.2",
     "dotenv": "catalog:",
     "libsql": "catalog:",
     "lucide-react": "catalog:",

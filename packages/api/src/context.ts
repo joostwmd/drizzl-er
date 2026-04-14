@@ -4,7 +4,7 @@ export type CreateContextOptions = {
   context: HonoContext;
 };
 
-export async function createContext({ context }: CreateContextOptions) {
+export async function createContext(_options: CreateContextOptions) {
   return {
     auth: null,
     session: null,
