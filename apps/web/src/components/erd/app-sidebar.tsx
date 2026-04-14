@@ -118,7 +118,8 @@ export function ErdAppSidebar({ onAddPaste, onEditFile }: AppSidebarProps) {
                     <DropdownMenuContent align="end" className="w-40">
                       <DropdownMenuItem
                         onClick={() => {
-                          onEditFile(f.id);
+                          // Defer past Base UI menu close so the handler still runs reliably.
+                          queueMicrotask(() => onEditFile(f.id));
                         }}
                       >
                         <PencilIcon />
@@ -127,7 +128,7 @@ export function ErdAppSidebar({ onAddPaste, onEditFile }: AppSidebarProps) {
                       <DropdownMenuItem
                         variant="destructive"
                         onClick={() => {
-                          removeFile(f.id);
+                          queueMicrotask(() => removeFile(f.id));
                         }}
                       >
                         <Trash2Icon />

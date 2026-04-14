@@ -1,14 +1,19 @@
 import { env } from "@drizzl-er/env/web";
+import { Button } from "@drizzl-er/ui/components/button";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@drizzl-er/ui/components/sidebar";
 import { cn } from "@drizzl-er/ui/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
-import { GithubIcon } from "lucide-react";
-import { useDeferredValue, useMemo, useState } from "react";
+import { FileDown, GithubIcon } from "lucide-react";
+import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { ErdAppSidebar } from "@/components/erd/app-sidebar";
 import { SchemaFileDialog, type SchemaFileDialogMode } from "@/components/erd/schema-file-dialog";
-import { SchemaFlowCanvas } from "@/components/erd/schema-flow-canvas";
+import {
+  SchemaFlowCanvas,
+  type SchemaFlowCanvasHandle,
+  type SchemaFlowExportCapabilities,
+} from "@/components/erd/schema-flow-canvas";
 import { ModeToggle } from "@/components/mode-toggle";
 import { getEffectiveSource, pageSubtitle } from "@/lib/schema-file-utils";
 import { useSchemaFilesStore } from "@/stores/schema-files-store";
@@ -18,9 +23,18 @@ export const Route = createFileRoute("/")({
 });
 
 function IndexRoute() {
+  const canvasRef = useRef<SchemaFlowCanvasHandle>(null);
+  const [exportCaps, setExportCaps] = useState<SchemaFlowExportCapabilities>({
+    canExport: false,
+    isExporting: false,
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<SchemaFileDialogMode>("add");
   const [editId, setEditId] = useState<string | null>(null);
+
+  const onExportCapabilitiesChange = useCallback((caps: SchemaFlowExportCapabilities) => {
+    setExportCaps(caps);
+  }, []);
 
   const { files, view, addFile, updateFile } = useSchemaFilesStore(
     useShallow((s) => ({
@@ -60,6 +74,16 @@ function IndexRoute() {
             <p className="truncate text-muted-foreground text-sm">{subtitle}</p>
           </div>
           <div className="flex shrink-0 items-center gap-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              disabled={!exportCaps.canExport || exportCaps.isExporting}
+              onClick={() => void canvasRef.current?.exportPdf()}
+              aria-label="Export diagram as PDF"
+            >
+              <FileDown className="size-4" />
+            </Button>
             <ModeToggle />
             {githubUrl ? (
               <a
@@ -77,7 +101,12 @@ function IndexRoute() {
           </div>
         </header>
         <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-3 md:p-4">
-          <SchemaFlowCanvas source={graphSource} className="min-h-0 flex-1" />
+          <SchemaFlowCanvas
+            ref={canvasRef}
+            source={graphSource}
+            className="min-h-0 flex-1"
+            onExportCapabilitiesChange={onExportCapabilitiesChange}
+          />
         </div>
       </SidebarInset>
       <SchemaFileDialog

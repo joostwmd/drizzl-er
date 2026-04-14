@@ -25,9 +25,13 @@ export function getEffectiveSource(files: SchemaFileSlice[], view: SchemaView): 
 
 export function pageSubtitle(files: SchemaFileSlice[], view: SchemaView): string {
   if (view.kind === "all") {
-    return files.length === 1
-      ? "Whole schema (one file)"
-      : `Whole schema (${files.length} files)`;
+    if (files.length === 0) {
+      return "Whole schema (no files)";
+    }
+    if (files.length === 1) {
+      return "Whole schema (one file)";
+    }
+    return `Whole schema (${files.length} files)`;
   }
   const file = files.find((f) => f.id === view.id);
   return file ? `File: ${file.name}` : "Schema graph";

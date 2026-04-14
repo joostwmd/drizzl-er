@@ -1,21 +1,9 @@
 import { create } from "zustand";
 
+import { DEFAULT_SCHEMA_CODE } from "@/lib/default-huge-schema-code";
 import { normalizeSchemaFileName } from "@/lib/schema-file-utils";
 
-export const DEFAULT_SCHEMA_CODE = `import { pgSchema, text } from "drizzle-orm/pg-core";
-
-const schema = pgSchema("");
-
-export const userTable = schema.table("user", {
-  id: text("id").primaryKey(),
-  name: text("name"),
-});
-
-export const postTable = schema.table("post", {
-  id: text("id").primaryKey(),
-  userId: text("user_id").references(() => userTable.id),
-});
-`;
+export { DEFAULT_SCHEMA_CODE };
 
 export type SchemaView = { kind: "all" } | { kind: "file"; id: string };
 
@@ -29,14 +17,6 @@ function newId(): string {
   return crypto.randomUUID();
 }
 
-function createInitialFile(): SchemaFile {
-  return {
-    id: newId(),
-    name: "schema",
-    code: DEFAULT_SCHEMA_CODE,
-  };
-}
-
 type SchemaFilesState = {
   files: SchemaFile[];
   view: SchemaView;
@@ -48,7 +28,7 @@ type SchemaFilesState = {
 };
 
 export const useSchemaFilesStore = create<SchemaFilesState>((set, get) => ({
-  files: [createInitialFile()],
+  files: [],
   view: { kind: "all" },
 
   setViewAll: () => set({ view: { kind: "all" } }),
@@ -75,11 +55,12 @@ export const useSchemaFilesStore = create<SchemaFilesState>((set, get) => ({
 
   removeFile: (id) => {
     set((s) => {
-      const nextFiles = s.files.filter((f) => f.id !== id);
-      const files = nextFiles.length === 0 ? [createInitialFile()] : nextFiles;
+      const files = s.files.filter((f) => f.id !== id);
 
       let view: SchemaView = s.view;
-      if (view.kind === "file") {
+      if (files.length === 0) {
+        view = { kind: "all" };
+      } else if (view.kind === "file") {
         const activeId = view.id;
         if (activeId === id || !files.some((f) => f.id === activeId)) {
           view = { kind: "all" };

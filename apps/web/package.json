@@ -25,6 +25,8 @@
     "@trpc/tanstack-react-query": "^11.13.4",
     "@xyflow/react": "^12.10.2",
     "dotenv": "catalog:",
+    "html-to-image": "^1.11.13",
+    "jspdf": "^3.0.4",
     "libsql": "catalog:",
     "lucide-react": "catalog:",
     "next-themes": "catalog:",
