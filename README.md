@@ -7,7 +7,7 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 - **TypeScript** - For type safety and improved developer experience
 - **TanStack Router** - File-based routing with full type safety
 - **TailwindCSS** - Utility-first CSS for rapid UI development
-- **Shared UI package** - shadcn/ui primitives live in `packages/ui`
+- **shadcn/ui** - UI primitives live in `apps/web` alongside the app
 - **Hono** - Lightweight, performant server framework
 - **tRPC** - End-to-end type-safe APIs
 - **Node.js** - Runtime environment
@@ -52,41 +52,40 @@ The API is running at [http://localhost:3000](http://localhost:3000).
 
 ## UI Customization
 
-React web apps in this stack share shadcn/ui primitives through `packages/ui`.
+The frontend is a single Vite app (`apps/web`). Global design tokens and Tailwind live in one place:
 
-- Change design tokens and global styles in `packages/ui/src/styles/globals.css`
-- Update shared primitives in `packages/ui/src/components/*`
-- Adjust shadcn aliases or style config in `packages/ui/components.json` and `apps/web/components.json`
+- **Global CSS / theme tokens:** `apps/web/src/index.css`
+- **shadcn-style components:** `apps/web/src/components/ui/*`
+- **shadcn CLI config:** `apps/web/components.json` — the `"style"` field (e.g. `radix-nova`) is the **registry preset** used when you run `npx shadcn add`. It only affects **newly generated** files; it does not retroactively change existing components. Older presets such as **base-lyra** ship a lot of `rounded-none` in templates so corners ignore your `--radius` tokens. This project uses **`radix-nova`** plus theme radii (`rounded-md` / `rounded-lg` / etc.) so controls follow `index.css`.
 
-### Add more shared components
+### Add more components
 
-Run this from the project root to add more primitives to the shared UI package:
+Always run the CLI from `apps/web` so it reads `components.json` (style + `css: src/index.css`):
 
 ```bash
-npx shadcn@latest add accordion dialog popover sheet table -c packages/ui
+cd apps/web && npx shadcn@latest add accordion dialog popover sheet table
 ```
 
-Import shared components like this:
+If a new component still looks square, either switch `"style"` in `components.json` to another registry preset or adjust the generated classes to use `rounded-md` / `rounded-lg` like the rest of the kit.
+
+Import UI primitives with the `@/` alias:
 
 ```tsx
-import { Button } from "@drizzl-er/ui/components/button";
+import { Button } from "@/components/ui/button";
 ```
-
-### Add app-specific blocks
-
-If you want to add app-specific blocks instead of shared primitives, run the shadcn CLI from `apps/web`.
 
 ## Project Structure
 
 ```
 drizzl-er/
 ├── apps/
-│   ├── web/         # Frontend application (React + TanStack Router)
+│   ├── web/         # Frontend (React + TanStack Router + shadcn/ui)
 │   └── server/      # Backend API (Hono, TRPC)
 ├── packages/
-│   ├── ui/          # Shared shadcn/ui components and styles
-│   ├── api/         # API layer / business logic
-│   └── db/          # Database schema & queries
+│   ├── api/                  # API layer / business logic
+│   ├── db/                   # Database schema & queries
+│   ├── drizzle-schema-graph/ # Schema → graph conversion (shared lib)
+│   └── env/                  # Environment validation
 ```
 
 ## Available Scripts

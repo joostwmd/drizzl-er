@@ -1,11 +1,11 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "base-lyra",
+  "style": "radix-nova",
   "rsc": false,
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "../../packages/ui/src/styles/globals.css",
+    "css": "src/index.css",
     "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
@@ -15,8 +15,8 @@
   "menuAccent": "subtle",
   "aliases": {
     "components": "@/components",
-    "utils": "@drizzl-er/ui/lib/utils",
-    "ui": "@drizzl-er/ui/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

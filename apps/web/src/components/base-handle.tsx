@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { Handle } from "@xyflow/react";
 
-import { cn } from "@drizzl-er/ui/lib/utils";
+import { cn } from "@/lib/utils";
 
 export type BaseHandleProps = ComponentProps<typeof Handle> & {
   /** Invisible anchor for programmatic edges only (React Flow skill: use opacity, not display:none). */

@@ -20,8 +20,8 @@ import { useTheme } from "next-themes";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { cn } from "@drizzl-er/ui/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@drizzl-er/ui/components/tabs";
+import { cn } from "@/lib/utils";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export type { CodeEditorProps, PreviewProps, SandpackLayoutProps, SandpackProviderProps };
 
@@ -41,7 +41,7 @@ export type SandboxLayoutProps = SandpackLayoutProps;
 
 export const SandboxLayout = ({ className, ...props }: SandboxLayoutProps): ReactNode => (
   <SandpackLayout
-    className={cn("!rounded-none !border-0 !bg-transparent !shadow-none", className)}
+    className={cn("rounded-md border-0 bg-transparent shadow-none", className)}
     {...props}
   />
 );
@@ -184,12 +184,12 @@ export function LiveCodeSandboxWorkspace({
         <Tabs defaultValue="workspace" className="flex min-h-0 flex-1 flex-col gap-0">
           <TabsList
             variant="line"
-            className="h-9 w-full shrink-0 justify-start gap-0 rounded-none border-b border-border bg-muted/40 px-2"
+            className="h-9 w-full shrink-0 justify-start gap-0 rounded-t-md border-b border-border bg-muted/40 px-2"
           >
-            <TabsTrigger value="workspace" className="rounded-none px-3 text-xs">
+            <TabsTrigger value="workspace" className="rounded-md px-3 text-xs">
               Workspace
             </TabsTrigger>
-            <TabsTrigger value="console" className="rounded-none px-3 text-xs">
+            <TabsTrigger value="console" className="rounded-md px-3 text-xs">
               Console
             </TabsTrigger>
           </TabsList>

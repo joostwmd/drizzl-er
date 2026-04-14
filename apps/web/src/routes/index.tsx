@@ -1,7 +1,7 @@
 import { env } from "@drizzl-er/env/web";
-import { Button } from "@drizzl-er/ui/components/button";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@drizzl-er/ui/components/sidebar";
-import { cn } from "@drizzl-er/ui/lib/utils";
+import { Button } from "@/components/ui/button";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { FileDown, GithubIcon } from "lucide-react";
 import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react";
@@ -9,6 +9,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { ErdAppSidebar } from "@/components/erd/app-sidebar";
 import { SchemaFileDialog, type SchemaFileDialogMode } from "@/components/erd/schema-file-dialog";
+import { SchemaFilesImportDialog } from "@/components/erd/schema-files-import-dialog";
 import {
   SchemaFlowCanvas,
   type SchemaFlowCanvasHandle,
@@ -31,6 +32,7 @@ function IndexRoute() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<SchemaFileDialogMode>("add");
   const [editId, setEditId] = useState<string | null>(null);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
 
   const onExportCapabilitiesChange = useCallback((caps: SchemaFlowExportCapabilities) => {
     setExportCaps(caps);
@@ -66,6 +68,7 @@ function IndexRoute() {
           setEditId(id);
           setDialogOpen(true);
         }}
+        onOpenImportDialog={() => setImportDialogOpen(true)}
       />
       <SidebarInset className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <header className="flex shrink-0 items-center justify-between gap-3 border-b px-3 py-2.5 md:px-4">
@@ -91,7 +94,7 @@ function IndexRoute() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  "inline-flex size-8 shrink-0 items-center justify-center rounded-none text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+                  "inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
                 )}
               >
                 <GithubIcon className="size-5" />
@@ -126,6 +129,7 @@ function IndexRoute() {
           }
         }}
       />
+      <SchemaFilesImportDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} />
     </SidebarProvider>
   );
 }

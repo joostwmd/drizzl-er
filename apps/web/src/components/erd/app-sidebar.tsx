@@ -1,15 +1,10 @@
-import { Button } from "@drizzl-er/ui/components/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@drizzl-er/ui/components/dropdown-menu";
-import {
-  FileUpload,
-  FileUploadDropzone,
-  FileUploadTrigger,
-} from "@drizzl-er/ui/components/file-upload";
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -24,45 +19,36 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from "@drizzl-er/ui/components/sidebar";
-import { Separator } from "@drizzl-er/ui/components/separator";
-import { FileTextIcon, LayersIcon, MoreHorizontalIcon, PencilIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { useCallback, useState } from "react";
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import {
+  ClipboardPasteIcon,
+  FileTextIcon,
+  ImportIcon,
+  LayersIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 
-import { stripSchemaExtensions } from "@/lib/schema-file-utils";
 import { useSchemaFilesStore } from "@/stores/schema-files-store";
 
 type AppSidebarProps = {
   onAddPaste: () => void;
   onEditFile: (id: string) => void;
+  onOpenImportDialog: () => void;
 };
 
-export function ErdAppSidebar({ onAddPaste, onEditFile }: AppSidebarProps) {
-  const [uploadKey, setUploadKey] = useState(0);
-  const { files, view, setViewAll, setViewFile, addFile, removeFile } = useSchemaFilesStore(
+export function ErdAppSidebar({ onAddPaste, onEditFile, onOpenImportDialog }: AppSidebarProps) {
+  const { files, view, setViewAll, setViewFile, removeFile } = useSchemaFilesStore(
     useShallow((s) => ({
       files: s.files,
       view: s.view,
       setViewAll: s.setViewAll,
       setViewFile: s.setViewFile,
-      addFile: s.addFile,
       removeFile: s.removeFile,
     })),
-  );
-
-  const onAcceptFiles = useCallback(
-    (accepted: File[]) => {
-      void (async () => {
-        for (const file of accepted) {
-          const code = await file.text();
-          const base = stripSchemaExtensions(file.name);
-          addFile(base, code);
-        }
-        setUploadKey((k) => k + 1);
-      })();
-    },
-    [addFile],
   );
 
   return (
@@ -144,26 +130,38 @@ export function ErdAppSidebar({ onAddPaste, onEditFile }: AppSidebarProps) {
       </SidebarContent>
 
       <SidebarFooter className="gap-2 border-t border-sidebar-border p-2 pb-3">
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-2">
           <span className="px-1 text-[10px] text-sidebar-foreground/70 uppercase tracking-wide">Add files</span>
-          <Button type="button" variant="outline" size="sm" className="w-full justify-start gap-2" onClick={onAddPaste}>
-            <PlusIcon className="size-3.5" />
-            Paste or type…
-          </Button>
-          <FileUpload
-            key={uploadKey}
-            accept=".ts,.tsx,.js,.jsx,.mjs,.cjs"
-            multiple
-            onAccept={onAcceptFiles}
-            className="w-full"
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 border-sidebar-border bg-sidebar hover:bg-sidebar-accent/80"
+            onClick={onAddPaste}
           >
-            <FileUploadDropzone className="min-h-[72px] border-sidebar-border bg-sidebar-accent/30 px-2 py-3 text-center text-[11px] text-sidebar-foreground/80 hover:bg-sidebar-accent/50">
-              <span className="block">Drop Drizzle files here</span>
-              <FileUploadTrigger className="mt-1 text-sidebar-foreground underline-offset-2 hover:underline">
-                Browse files
-              </FileUploadTrigger>
-            </FileUploadDropzone>
-          </FileUpload>
+            <ClipboardPasteIcon className="size-3.5" aria-hidden />
+            Paste code
+          </Button>
+          <div className="relative py-0.5" aria-hidden>
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="bg-sidebar-border" />
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-sidebar px-2 font-medium text-[10px] text-sidebar-foreground/60 uppercase tracking-wide">
+                or
+              </span>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="w-full justify-start gap-2 border-sidebar-border bg-sidebar hover:bg-sidebar-accent/80"
+            onClick={onOpenImportDialog}
+          >
+            <ImportIcon className="size-3.5" aria-hidden />
+            Import files
+          </Button>
         </div>
       </SidebarFooter>
       <SidebarRail />

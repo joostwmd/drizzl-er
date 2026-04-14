@@ -1,6 +1,6 @@
 import type { RelationshipCardinality } from "@drizzl-er/drizzle-schema-graph";
-import { Badge } from "@drizzl-er/ui/components/badge";
-import { cn } from "@drizzl-er/ui/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   BaseEdge,
   EdgeLabelRenderer,

@@ -1,5 +1,5 @@
-import { LiveCodeSandboxWorkspace } from "@drizzl-er/ui/components/code-sandbox";
-import { Button } from "@drizzl-er/ui/components/button";
+import { LiveCodeSandboxWorkspace } from "@/components/ui/code-sandbox";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,9 +7,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@drizzl-er/ui/components/dialog";
-import { Input } from "@drizzl-er/ui/components/input";
-import { Label } from "@drizzl-er/ui/components/label";
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 
 import { normalizeSchemaFileName } from "@/lib/schema-file-utils";

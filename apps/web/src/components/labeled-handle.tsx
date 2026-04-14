@@ -1,7 +1,7 @@
 import React, { type ComponentProps } from "react";
 import { type HandleProps } from "@xyflow/react";
 
-import { cn } from "@drizzl-er/ui/lib/utils";
+import { cn } from "@/lib/utils";
 import { BaseHandle } from "@/components/base-handle";
 
 const flexDirections = {

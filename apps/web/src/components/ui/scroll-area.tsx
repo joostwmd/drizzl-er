@@ -1,6 +1,6 @@
 import { ScrollArea as ScrollAreaPrimitive } from "@base-ui/react/scroll-area"
 
-import { cn } from "@drizzl-er/ui/lib/utils"
+import { cn } from "@/lib/utils"
 
 function ScrollArea({
   className,
@@ -43,7 +43,7 @@ function ScrollBar({
     >
       <ScrollAreaPrimitive.Thumb
         data-slot="scroll-area-thumb"
-        className="relative flex-1 rounded-none bg-border"
+        className="relative flex-1 rounded-full bg-border"
       />
     </ScrollAreaPrimitive.Scrollbar>
   )

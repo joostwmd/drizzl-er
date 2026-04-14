@@ -1,9 +1,9 @@
 import { CheckCircleIcon, ChevronDownIcon, CircleIcon, Code, XCircleIcon } from "lucide-react"
 import type { ComponentProps, ReactNode } from "react"
-import { Badge } from "@drizzl-er/ui/components/badge"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@drizzl-er/ui/components/collapsible"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@drizzl-er/ui/components/tabs"
-import { cn } from "@drizzl-er/ui/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
 
 type SandboxState = "running" | "completed" | "error"
 
@@ -89,7 +89,7 @@ export type SandboxTabsListProps = ComponentProps<typeof TabsList>
 
 export const SandboxTabsList = ({ className, ...props }: SandboxTabsListProps) => (
   <TabsList
-    className={cn("h-auto rounded-none border-0 bg-transparent p-0", className)}
+    className={cn("h-auto rounded-md border-0 bg-transparent p-0", className)}
     {...props}
   />
 )
@@ -99,7 +99,7 @@ export type SandboxTabsTriggerProps = ComponentProps<typeof TabsTrigger>
 export const SandboxTabsTrigger = ({ className, ...props }: SandboxTabsTriggerProps) => (
   <TabsTrigger
     className={cn(
-      "rounded-none border-0 border-transparent border-b-2 px-4 py-2 font-medium text-muted-foreground text-sm transition-colors data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none",
+      "rounded-md border-0 border-transparent border-b-2 px-4 py-2 font-medium text-muted-foreground text-sm transition-colors data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none",
       className,
     )}
     {...props}

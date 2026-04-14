@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { cn } from "@drizzl-er/ui/lib/utils"
+import { cn } from "@/lib/utils"
 
 function Table({ className, children, ...props }: React.ComponentProps<"table">) {
   return (

@@ -1,6 +1,6 @@
 import { convertDrizzleSchemaToGraph } from "@drizzl-er/drizzle-schema-graph";
-import { Button } from "@drizzl-er/ui/components/button";
-import { cn } from "@drizzl-er/ui/lib/utils";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Background,
   Panel,

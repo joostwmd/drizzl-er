@@ -14,9 +14,9 @@ import {
   Slot as SlotPrimitive,
 } from "radix-ui";
 import * as React from "react";
-import { cn } from "@drizzl-er/ui/lib/utils";
-import { useAsRef } from "@drizzl-er/ui/hooks/use-as-ref";
-import { useLazyRef } from "@drizzl-er/ui/hooks/use-lazy-ref";
+import { cn } from "@/lib/utils";
+import { useAsRef } from "@/hooks/use-as-ref";
+import { useLazyRef } from "@/hooks/use-lazy-ref";
 
 const ROOT_NAME = "FileUpload";
 const DROPZONE_NAME = "FileUploadDropzone";
