@@ -1,58 +1,37 @@
 # drizzl-er
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Router, Hono, TRPC, and more.
+Single-page app for visualizing **Drizzle ORM** schema source as entity–relationship diagrams. Everything runs in the browser (Vite + React).
 
 ## Features
 
-- **TypeScript** - For type safety and improved developer experience
-- **TanStack Router** - File-based routing with full type safety
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **shadcn/ui** - UI primitives live in `apps/web` alongside the app
-- **Hono** - Lightweight, performant server framework
-- **tRPC** - End-to-end type-safe APIs
-- **Node.js** - Runtime environment
-- **Drizzle** - TypeScript-first ORM
-- **SQLite/Turso** - Database engine
-- **Turborepo** - Optimized monorepo build system
+- **TypeScript** — Type safety across the monorepo
+- **TanStack Router** — File-based routing
+- **Tailwind CSS** — Styling
+- **shadcn/ui** — UI primitives in `apps/web`
+- **React Flow** — Canvas for the diagram
+- **@drizzl-er/drizzle-schema-graph** — Parses Drizzle-flavored TypeScript into graph data (no database)
+- **Turborepo** — Monorepo tasks
 
 ## Getting Started
 
-First, install the dependencies:
-
 ```bash
 pnpm install
+pnpm dev:web
 ```
 
-## Database Setup
+Open the URL Vite prints (see `apps/web/vite.config.ts` for the dev port).
 
-This project uses SQLite with Drizzle ORM.
+### Optional: GitHub link in the header
 
-1. Start the local SQLite database (optional):
+Set in `apps/web` (e.g. `.env.local`):
 
 ```bash
-pnpm run db:local
+VITE_GITHUB_REPO_URL=https://github.com/your-org/your-repo
 ```
-
-2. Update your `.env` file in the `apps/server` directory with the appropriate connection details if needed.
-
-3. Apply the schema to your database:
-
-```bash
-pnpm run db:push
-```
-
-Then, run the development server:
-
-```bash
-pnpm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
 
 ## UI Customization
 
-The frontend is a single Vite app (`apps/web`). Global design tokens and Tailwind live in one place:
+The frontend lives in `apps/web`. Global design tokens and Tailwind live in one place:
 
 - **Global CSS / theme tokens:** `apps/web/src/index.css`
 - **shadcn-style components:** `apps/web/src/components/ui/*`
@@ -79,24 +58,17 @@ import { Button } from "@/components/ui/button";
 ```
 drizzl-er/
 ├── apps/
-│   ├── web/         # Frontend (React + TanStack Router + shadcn/ui)
-│   └── server/      # Backend API (Hono, TRPC)
+│   └── web/                  # Vite + React + TanStack Router
 ├── packages/
-│   ├── api/                  # API layer / business logic
-│   ├── db/                   # Database schema & queries
-│   ├── drizzle-schema-graph/ # Schema → graph conversion (shared lib)
-│   └── env/                  # Environment validation
+│   ├── drizzle-schema-graph/ # Schema → graph conversion
+│   ├── env/                  # Vite env validation (@t3-oss/env-core)
+│   └── config/               # Shared TypeScript config
 ```
 
-## Available Scripts
+## Scripts
 
-- `pnpm run dev`: Start all applications in development mode
-- `pnpm run build`: Build all applications
-- `pnpm run dev:web`: Start only the web application
-- `pnpm run dev:server`: Start only the server
-- `pnpm run check-types`: Check TypeScript types across all apps
-- `pnpm run db:push`: Push schema changes to database
-- `pnpm run db:generate`: Generate database client/types
-- `pnpm run db:migrate`: Run database migrations
-- `pnpm run db:studio`: Open database studio UI
-- `pnpm run db:local`: Start the local SQLite database
+- `pnpm run dev` — All packages’ `dev` tasks (usually just the web app)
+- `pnpm run dev:web` — Web app only
+- `pnpm run build` — Production build
+- `pnpm run check-types` — Typecheck across workspaces
+- `pnpm run test` — Tests (e.g. `drizzle-schema-graph`)

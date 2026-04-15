@@ -8,8 +8,7 @@ import { useCallback, useDeferredValue, useMemo, useRef, useState } from "react"
 import { useShallow } from "zustand/react/shallow";
 
 import { ErdAppSidebar } from "@/components/erd/app-sidebar";
-import { SchemaFileDialog, type SchemaFileDialogMode } from "@/components/erd/schema-file-dialog";
-import { SchemaFilesImportDialog } from "@/components/erd/schema-files-import-dialog";
+import { SchemaFileDialog } from "@/components/erd/schema-file-dialog";
 import {
   SchemaFlowCanvas,
   type SchemaFlowCanvasHandle,
@@ -30,20 +29,16 @@ function IndexRoute() {
     isExporting: false,
   });
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState<SchemaFileDialogMode>("add");
-  const [editId, setEditId] = useState<string | null>(null);
-  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [viewId, setViewId] = useState<string | null>(null);
 
   const onExportCapabilitiesChange = useCallback((caps: SchemaFlowExportCapabilities) => {
     setExportCaps(caps);
   }, []);
 
-  const { files, view, addFile, updateFile } = useSchemaFilesStore(
+  const { files, view } = useSchemaFilesStore(
     useShallow((s) => ({
       files: s.files,
       view: s.view,
-      addFile: s.addFile,
-      updateFile: s.updateFile,
     })),
   );
 
@@ -51,24 +46,17 @@ function IndexRoute() {
   const graphSource = useDeferredValue(effectiveSource);
   const subtitle = useMemo(() => pageSubtitle(files, view), [files, view]);
 
-  const editingFile = editId ? files.find((f) => f.id === editId) : undefined;
+  const viewingFile = viewId ? files.find((f) => f.id === viewId) : undefined;
 
   const githubUrl = env.VITE_GITHUB_REPO_URL;
 
   return (
     <SidebarProvider className="flex h-full min-h-0 flex-1 overflow-hidden">
       <ErdAppSidebar
-        onAddPaste={() => {
-          setDialogMode("add");
-          setEditId(null);
+        onViewFile={(id) => {
+          setViewId(id);
           setDialogOpen(true);
         }}
-        onEditFile={(id) => {
-          setDialogMode("edit");
-          setEditId(id);
-          setDialogOpen(true);
-        }}
-        onOpenImportDialog={() => setImportDialogOpen(true)}
       />
       <SidebarInset className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <header className="flex h-12 shrink-0 items-center justify-between gap-3 border-b px-3 md:px-4">
@@ -123,20 +111,11 @@ function IndexRoute() {
         open={dialogOpen}
         onOpenChange={(open) => {
           setDialogOpen(open);
-          if (!open) setEditId(null);
+          if (!open) setViewId(null);
         }}
-        mode={dialogMode}
-        initialName={editingFile?.name}
-        initialCode={editingFile?.code}
-        onSave={(name, code) => {
-          if (dialogMode === "add") {
-            addFile(name, code);
-          } else if (editId) {
-            updateFile(editId, name, code);
-          }
-        }}
+        initialName={viewingFile?.name}
+        initialCode={viewingFile?.code}
       />
-      <SchemaFilesImportDialog open={importDialogOpen} onOpenChange={setImportDialogOpen} />
     </SidebarProvider>
   );
 }

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,35 +18,50 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import {
-  ClipboardPasteIcon,
+  FileUpload,
+  FileUploadDropzone,
+} from "@/components/ui/file-upload";
+import {
+  FileIcon,
   FileTextIcon,
-  ImportIcon,
   LayersIcon,
   MoreHorizontalIcon,
-  PencilIcon,
+  EyeIcon,
   Trash2Icon,
 } from "lucide-react";
+import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 
+import { stripSchemaExtensions } from "@/lib/schema-file-utils";
 import { useSchemaFilesStore } from "@/stores/schema-files-store";
 
 type AppSidebarProps = {
-  onAddPaste: () => void;
-  onEditFile: (id: string) => void;
-  onOpenImportDialog: () => void;
+  onViewFile: (id: string) => void;
 };
 
-export function ErdAppSidebar({ onAddPaste, onEditFile, onOpenImportDialog }: AppSidebarProps) {
-  const { files, view, setViewAll, setViewFile, removeFile } = useSchemaFilesStore(
+export function ErdAppSidebar({ onViewFile }: AppSidebarProps) {
+  const { files, view, setViewAll, setViewFile, removeFile, addFile } = useSchemaFilesStore(
     useShallow((s) => ({
       files: s.files,
       view: s.view,
       setViewAll: s.setViewAll,
       setViewFile: s.setViewFile,
       removeFile: s.removeFile,
+      addFile: s.addFile,
     })),
+  );
+
+  const onAcceptFiles = useCallback(
+    (accepted: File[]) => {
+      void (async () => {
+        for (const file of accepted) {
+          const code = await file.text();
+          addFile(stripSchemaExtensions(file.name), code);
+        }
+      })();
+    },
+    [addFile],
   );
 
   return (
@@ -100,11 +114,11 @@ export function ErdAppSidebar({ onAddPaste, onEditFile, onOpenImportDialog }: Ap
                       <DropdownMenuItem
                         onClick={() => {
                           // Defer past Base UI menu close so the handler still runs reliably.
-                          queueMicrotask(() => onEditFile(f.id));
+                          queueMicrotask(() => onViewFile(f.id));
                         }}
                       >
-                        <PencilIcon />
-                        Edit
+                        <EyeIcon />
+                        View
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         variant="destructive"
@@ -125,39 +139,26 @@ export function ErdAppSidebar({ onAddPaste, onEditFile, onOpenImportDialog }: Ap
       </SidebarContent>
 
       <SidebarFooter className="gap-2 border-t border-sidebar-border p-2 pb-3">
-        <div className="flex flex-col gap-2">
-          <span className="px-1 text-[10px] text-sidebar-foreground/70 uppercase tracking-wide">Add files</span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="w-full justify-start gap-2 border-sidebar-border bg-sidebar hover:bg-sidebar-accent/80"
-            onClick={onAddPaste}
+        <span className="px-1 text-[10px] text-sidebar-foreground/70 uppercase tracking-wide">
+          Drop files to add
+        </span>
+        <FileUpload
+          accept=".ts,.tsx,.js,.jsx,.mjs,.cjs"
+          multiple
+          onAccept={onAcceptFiles}
+          className="w-full"
+        >
+          <FileUploadDropzone
+            className="group flex min-h-[232px] w-full cursor-pointer items-center justify-center rounded-md border border-dashed border-sidebar-border bg-sidebar-accent/20 p-4 text-xs text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent/30 data-[dragging]:border-primary/40 data-[dragging]:bg-sidebar-accent/35"
           >
-            <ClipboardPasteIcon className="size-3.5" aria-hidden />
-            Paste code
-          </Button>
-          <div className="relative py-0.5" aria-hidden>
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="bg-sidebar-border" />
+            <div className="relative flex h-[182px] w-[148px] flex-col items-center justify-center rounded-sm border border-sidebar-border/80 bg-sidebar px-4 text-center shadow-sm transition-colors group-data-[dragging]:border-primary/70 group-data-[dragging]:bg-sidebar-accent/50">
+              <div className="-top-px -right-px absolute h-5 w-5 border-sidebar-border/80 border-b border-l bg-sidebar-accent/60" />
+              <FileIcon className="mb-2 size-5 text-sidebar-foreground/80" />
+              <span className="font-medium text-[11px] text-sidebar-foreground">Drop schema files</span>
+              <span className="mt-1 text-[10px] text-sidebar-foreground/60">or click to browse</span>
             </div>
-            <div className="relative flex justify-center">
-              <span className="bg-sidebar px-2 font-medium text-[10px] text-sidebar-foreground/60 uppercase tracking-wide">
-                or
-              </span>
-            </div>
-          </div>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="w-full justify-start gap-2 border-sidebar-border bg-sidebar hover:bg-sidebar-accent/80"
-            onClick={onOpenImportDialog}
-          >
-            <ImportIcon className="size-3.5" aria-hidden />
-            Import files
-          </Button>
-        </div>
+          </FileUploadDropzone>
+        </FileUpload>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

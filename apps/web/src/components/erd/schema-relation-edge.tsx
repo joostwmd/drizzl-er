@@ -58,8 +58,11 @@ export const SchemaRelationEdge = memo(function SchemaRelationEdge({
         id={id}
         path={edgePath}
         style={{
-          strokeWidth: selected ? 2.5 : 1.75,
-          stroke: selected ? "var(--primary)" : undefined,
+          strokeWidth: selected ? 2.25 : 1.5,
+          // Use explicit colors to avoid CSS variable parsing issues on SVG paths.
+          stroke: selected ? "#64748b" : "#94a3b8",
+          strokeOpacity: selected ? 0.75 : 0.6,
+          strokeDasharray: selected ? "7 5" : "5 5",
         }}
       />
       {label ? (

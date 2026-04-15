@@ -2,6 +2,7 @@ import { convertDrizzleSchemaToGraph } from "@drizzl-er/drizzle-schema-graph";
 import { cn, waitForPaint } from "@/lib/utils";
 import {
   Background,
+  MiniMap,
   ReactFlow,
   applyEdgeChanges,
   applyNodeChanges,
@@ -18,6 +19,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -139,7 +141,8 @@ export const SchemaFlowCanvas = forwardRef<SchemaFlowCanvasHandle, SchemaFlowCan
     const empty = !source.trim();
     const canExport = !empty && !parseError && nodes.length > 0;
 
-    useEffect(() => {
+    // useLayoutEffect so the header can paint the loading spinner before html-to-image blocks the main thread.
+    useLayoutEffect(() => {
       onExportCapabilitiesChange?.({ canExport, isExporting: childExporting });
     }, [canExport, childExporting, onExportCapabilitiesChange]);
 
@@ -175,6 +178,16 @@ export const SchemaFlowCanvas = forwardRef<SchemaFlowCanvasHandle, SchemaFlowCan
               ref={pdfControlsRef}
               exportDisabled={!canExport}
               onExportingChange={onExportingChange}
+            />
+            <MiniMap
+              pannable
+              zoomable
+              position="bottom-right"
+              style={{
+                width: 140,
+                height: 88,
+                borderRadius: 8,
+              }}
             />
             <Background />
           </ReactFlow>

@@ -70,8 +70,6 @@ function inlineReactFlowEdgePresentation(scope: HTMLElement): () => void {
 
 /**
  * Rasterizes the **current on-screen viewport** (pan/zoom as shown), then saves a PDF.
- * This avoids recomputing a huge virtual bounds / refit pass around all nodes, which
- * was the main cost (very large html-to-image canvases, including upscaling small graphs).
  */
 export async function exportSchemaFlowToPdf(
   getNodes: () => Node[],
